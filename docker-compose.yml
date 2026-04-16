@@ -1,0 +1,11 @@
+name: PLATO Room Server
+services:
+  plato:
+    build: ./http-api
+    ports:
+      - "8100:8100"
+    volumes:
+      - /srv/plato-rooms:/srv/plato-rooms
+    environment:
+      - PLATO_ROOMS_DIR=/srv/plato-rooms
+    restart: unless-stopped

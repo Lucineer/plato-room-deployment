@@ -1,0 +1,9 @@
+[Unit]
+Description=PLATO Room Turn Processor — %i
+After=network.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/srv/plato-rooms/%i
+ExecStart=/usr/bin/python3 bridges/%i_engine.py --world-dir world
+TimeoutStartSec=30

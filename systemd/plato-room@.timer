@@ -1,0 +1,10 @@
+[Unit]
+Description=PLATO Room Timer — %i (runs every 30 seconds)
+
+[Install]
+WantedBy=timers.target
+
+[Timer]
+OnBootSec=10sec
+OnUnitActiveSec=30sec
+AccuracySec=5sec

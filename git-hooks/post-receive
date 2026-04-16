@@ -1,0 +1,43 @@
+#!/bin/bash
+# PLATO Room — Bare Git Post-Receive Hook
+# Install this as hooks/post-receive in a bare git repo
+# Usage:
+#   git init --bare /srv/plato-rooms/study.git
+#   cp git-hooks/post-receive /srv/plato-rooms/study.git/hooks/
+#   chmod +x /srv/plato-rooms/study.git/hooks/post-receive
+#
+# Agents clone, write commands, push → engine fires automatically
+
+set -e
+
+# Configuration — customize these per room
+WORK_DIR="/srv/plato-rooms/study-working"
+ENGINE_SCRIPT="bridges/study_engine.py"
+WORLD_SUBDIR="world"
+
+while read oldrev newrev refname; do
+    echo "[$(date -u +%Y%m%d-%H%M%S)] Received push: $refname"
+
+    # Checkout working copy
+    mkdir -p "$WORK_DIR"
+    GIT_WORK_TREE="$WORK_DIR" git checkout -f "$refname" 2>/dev/null
+
+    # Check if there are commands to process
+    CMDS_DIR="$WORK_DIR/$WORLD_SUBDIR/commands"
+    if [ -d "$CMDS_DIR" ] && [ "$(ls -A "$CMDS_DIR" 2>/dev/null)" ]; then
+        echo "[$(date -u +%Y%m%d-%H%M%S)] Processing commands..."
+        cd "$WORK_DIR"
+        python3 "$ENGINE_SCRIPT" --world-dir "$WORLD_SUBDIR" 2>&1 || echo "Engine error (non-fatal)"
+
+        # Commit updated state back
+        git add -A
+        if ! git diff --staged --quiet; then
+            git commit -m "turn: $(date -u +%Y%m%d-%H%M%S)" --author="Room Engine <room@plato.local>"
+            echo "[$(date -u +%Y%m%d-%H%M%S)] State committed"
+        fi
+    else
+        echo "[$(date -u +%Y%m%d-%H%M%S)] No commands to process"
+    fi
+done
+
+echo "[$(date -u +%Y%m%d-%H%M%S)] Push complete."

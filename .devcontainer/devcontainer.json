@@ -1,0 +1,14 @@
+{
+  "name": "PLATO Room",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.11"
+    }
+  },
+  "forwardPorts": [8100],
+  "postCreateCommand": "pip install fastapi uvicorn pyyaml",
+  "portsAttributes": {
+    "8100": { "label": "PLATO Room API" }
+  }
+}

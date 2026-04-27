@@ -31,3 +31,11 @@ Part of the PLATO ecosystem. See [PLATO-DEPLOYMENT-OPTIONS.md](./PLATO-DEPLOYMEN
 ## License
 
 MIT / Apache-2.0
+
+
+---
+
+## Fleet Context
+
+This repo is part of the [Cocapn Fleet](https://github.com/Lucineer/fleet-onboarding). See [fleet-onboarding](https://github.com/Lucineer/fleet-onboarding) for the Plato-First context architecture, bottle protocol, and onboarding guide.
+
